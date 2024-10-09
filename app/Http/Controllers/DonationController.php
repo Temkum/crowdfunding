@@ -10,7 +10,55 @@ class DonationController extends Controller
 {
     public function index()
     {
-        return Donation::with('user')->latest()->paginate();
+        $donations = Donation::latest()->paginate();
+        return view('dashboard', compact('donations'));
+    }
+
+    public function create()
+    {
+        return view('donations.create');
+    }
+
+    public function edit(Donation $donation)
+    {
+        return view('donations.edit', compact('donation'));
+    }
+
+    public function contribute0(Donation $donation, Request $request)
+    {
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric|min:0.01',
+        ]);
+
+        $donation->amount += $validatedData['amount'];
+        $donation->save();
+
+        return response()->json(['message' => 'Contribution added successfully', 'donation' => $donation], 201);
+    }
+
+    public function contribute(Request $request, Donation $donation)
+    {
+        $amount = $request->input('amount', 0);
+
+        if ($amount <= 0) {
+            return response()->json(['error' => 'Contribution amount must be greater than zero'], 422);
+        }
+
+        $newAmount = min($donation->remainingAmount(), $amount);
+
+        // Create a new contribution record
+        $donation->contributors()->attach(auth()->id(), ['amount' => $newAmount]);
+
+        // Increment the donation's current amount
+        $donation->increment('current_amount', $newAmount);
+
+        // Automatically mark as completed if target is reached
+        if ($donation->isCompleted()) {
+            $donation->completed = true;
+            $donation->save();
+        }
+
+        return response()->json(['message' => 'Donation contributed successfully', 'donation' => $donation]);
     }
 
     public function store(Request $request)
@@ -21,7 +69,9 @@ class DonationController extends Controller
             'user_id' => 'required|exists:users,id',
         ]);
 
+
         $donation = Donation::create($validatedData);
+        dd($donation);
 
         return response()->json(['message' => 'Donation created successfully', 'donation' => $donation], 201);
     }
