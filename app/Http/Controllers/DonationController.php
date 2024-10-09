@@ -64,16 +64,20 @@ class DonationController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'amount' => 'required|numeric|min:0.01',
-            'description' => 'nullable|string|max:255',
-            'user_id' => 'required|exists:users,id',
+            'target_amount' => 'required|numeric|min:0.01',
+            'description' => 'required|string|max:255',
         ]);
 
+        $validatedData['user_id'] = auth()->id();
 
-        $donation = Donation::create($validatedData);
-        dd($donation);
+        try {
+            $donation = Donation::create($validatedData);
 
-        return response()->json(['message' => 'Donation created successfully', 'donation' => $donation], 201);
+            return response()->json(['message' => 'Donation created successfully', 'donation' => $donation], 201);
+        } catch (\Exception $e) {
+            \Log::error('Error creating donation: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to create donation'], 500);
+        }
     }
 
     public function show(Donation $donation)
