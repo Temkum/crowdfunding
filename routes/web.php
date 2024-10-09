@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +29,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::apiResource('donations', DonationController::class);
+
+Route::post('/donations/{id}/complete', [DonationController::class, 'markAsComplete']);
+Route::get('/users/{id}/donations', [DonationController::class, 'getUserDonations']);
+
+require __DIR__ . '/auth.php';
