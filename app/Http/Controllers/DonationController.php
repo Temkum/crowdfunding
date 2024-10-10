@@ -31,44 +31,6 @@ class DonationController extends Controller
         return view('donations.contribute', compact('donation'));
     }
 
-
-    public function contribute1(Donation $donation, Request $request)
-    {
-        $validatedData = $request->validate([
-            'target_amount' => 'required|numeric|min:0.01',
-        ]);
-
-        $donation->amount += $validatedData['target_amount'];
-        $donation->save();
-
-        return response()->json(['message' => 'Contribution added successfully', 'donation' => $donation], 201);
-    }
-
-    public function contribute2(Request $request, Donation $donation)
-    {
-        $amount = $request->input('target_amount', 0);
-
-        if ($amount <= 0) {
-            return response()->json(['error' => 'Contribution amount must be greater than zero'], 422);
-        }
-
-        $newAmount = min($donation->remainingAmount(), $amount);
-
-        // Create a new contribution record
-        $donation->contributors()->attach(auth()->id(), ['target_amount' => $newAmount]);
-
-        // Increment the donation's current amount
-        $donation->increment('current_amount', $newAmount);
-
-        // Automatically mark as completed if target is reached
-        if ($donation->isCompleted()) {
-            $donation->completed = true;
-            $donation->save();
-        }
-
-        return response()->json(['message' => 'Donation contributed successfully', 'donation' => $donation]);
-    }
-
     public function contribute(Request $request, Donation $donation)
     {
         $validatedData = $request->validate([
@@ -98,7 +60,6 @@ class DonationController extends Controller
             return back()->withErrors(['error' => 'Failed to contribute. Please try again.']);
         }
     }
-
 
     public function store(Request $request)
     {
@@ -155,7 +116,7 @@ class DonationController extends Controller
         return $user->donations()->latest()->paginate();
     }
 
-    public function UserDonations()
+    public function userDonations()
     {
         $userDonations = Auth::user()->donations()->latest()->paginate();
         return view('users.donations', compact('userDonations'));

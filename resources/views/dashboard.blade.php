@@ -20,9 +20,8 @@
                         </div>
                         <div class="inline-flex items-center text-base font-semibold">
                             @if(!$donation->completed)
-                            <button class="px-2.5 py-1.5 text-xs font-medium text-white bg-green-700 rounded mr-3"><a
-                                    href="{{ route('donations.form', $donation->id) }}">Contribute</a>
-                            </button>
+                            <a href="{{ route('donations.form', $donation->id) }}"
+                                class="px-2.5 py-1.5 text-xs font-medium text-white bg-green-700 rounded mr-3">Contribute</a>
                             @endif
                             <span class="text-xs font-semibold text-gray-400">{{ $donation->completed ? 'Completed'
                                 :
