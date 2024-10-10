@@ -113,11 +113,9 @@ class DonationController extends Controller
 
     public function getUserDonations(User $user)
     {
-        return $user->donations()->latest()->paginate();
-    }
+        // \Log::info('User ID: ' . $user->id);
+        // \Log::info('Donation count: ' . $user->donations()->count());
 
-    public function userDonations()
-    {
         $userDonations = Auth::user()->donations()->latest()->paginate();
         return view('users.donations', compact('userDonations'));
     }
