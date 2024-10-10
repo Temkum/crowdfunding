@@ -16,7 +16,7 @@
                             <p class="text-sm font-medium text-gray-700 truncate">{{ $donation->description }}</p>
                             <p class="text-sm text-gray-500 truncate">Target: {{ number_format($donation->target_amount,
                                 2) }} |
-                                Current: {{ number_format($donation->current_amount, 2) }}</p>
+                                Raised: {{ number_format($donation->current_amount, 2) }}</p>
                         </div>
                         <div class="inline-flex items-center text-base font-semibold">
                             @if(!$donation->completed)

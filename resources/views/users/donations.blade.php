@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-500 leading-tight">
             {{ __('Your Donations') }}
         </h2>
     </x-slot>
@@ -16,7 +16,7 @@
                         <div class="bg-gray-50 p-4 rounded-lg shadow-md">
                             <h3 class="text-lg font-semibold mb-2">{{ $donation->description }}</h3>
                             <p class="mb-2">Target: {{ number_format($donation->target_amount, 2) }}</p>
-                            <p class="mb-2">Current: {{ number_format($donation->current_amount, 2) }}</p>
+                            <p class="mb-2">Raised: {{ number_format($donation->current_amount, 2) }}</p>
                             <p class="mb-2">Status: {{ $donation->completed ? 'Completed' : 'Active' }}</p>
                             <p class="mb-2">Remaining: {{ number_format($donation->remainingAmount(), 2) }}</p>
                             <div class="action-buttons">
