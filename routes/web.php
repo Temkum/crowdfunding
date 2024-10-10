@@ -20,9 +20,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DonationController::class, 'index'])->name('dashboard');
 
     // User Donations
     Route::get('/users/{id}/donations', [DonationController::class, 'getUserDonations'])->name('users.donations');
@@ -36,6 +34,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::patch('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
 
     // Contribute to Donation
+    Route::get('/donations/{donation}/contribute', [DonationController::class, 'createContributionForm'])->name('donations.form');
     Route::post('/donations/{donation}/contribute', [DonationController::class, 'contribute'])->name('donations.contribute');
 });
 
