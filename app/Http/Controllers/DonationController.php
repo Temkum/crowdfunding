@@ -73,8 +73,6 @@ class DonationController extends Controller
         try {
             $donation = Donation::create($validatedData);
 
-            // return response()->json(['message' => 'Donation created successfully', 'donation' => $donation], 201);
-
             return redirect()->route('dashboard')->with('success', 'Donation created successfully');
         } catch (\Exception $e) {
             \Log::error('Error creating donation: ' . $e->getMessage());
@@ -107,13 +105,13 @@ class DonationController extends Controller
     public function destroy(Donation $donation)
     {
         $donation->delete();
-        return response()->json(['message' => 'Donation deleted successfully'], 200);
+        return redirect()->route('dashboard')->with(['message' => 'Donation deleted successfully'], 200);
     }
 
     public function markAsComplete(Donation $donation)
     {
         $donation->update(['completed' => true]);
-        return response()->json(['message' => 'Donation marked as completed'], 200);
+        return response()->json(['message' => 'Donation target reached.'], 200);
     }
 
     public function getUserDonations(User $user)

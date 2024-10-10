@@ -18,8 +18,19 @@
                             <p class="mb-2">Target: {{ number_format($donation->target_amount, 2) }}</p>
                             <p class="mb-2">Current: {{ number_format($donation->current_amount, 2) }}</p>
                             <p class="mb-2">Status: {{ $donation->completed ? 'Completed' : 'Active' }}</p>
-                            <a href="{{ route('donations.edit', $donation->id) }}"
-                                class="px-2.5 py-1.5 text-xs font-medium text-white bg-blue-700 rounded">Edit</a>
+                            <p class="mb-2">Remaining: {{ number_format($donation->remainingAmount(), 2) }}</p>
+                            <div class="action-buttons">
+                                <a href="{{ route('donations.edit', $donation->id) }}"
+                                    class="px-2.5 py-1.5 text-xs font-medium text-white bg-blue-700 rounded">Edit</a>
+                                <form action="{{ route('donations.destroy', $donation->id) }}" method="POST"
+                                    class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="px-2.5 py-1.5 text-xs font-medium text-white bg-red-700 rounded">Delete</button>
+                                </form>
+
+                            </div>
                         </div>
                         @empty
                         <p>You haven't created any donations yet.</p>
