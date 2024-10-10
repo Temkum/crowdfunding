@@ -90,13 +90,18 @@ class DonationController extends Controller
     public function update(Request $request, Donation $donation)
     {
         $validatedData = $request->validate([
-            'amount' => 'sometimes|numeric|min:0.01',
+            'target_amount' => 'sometimes|numeric|min:0.01',
             'description' => 'sometimes|nullable|string|max:255',
         ]);
 
         $donation->update($validatedData);
 
-        return response()->json(['message' => 'Donation updated successfully', 'donation' => $donation]);
+        if ($donation->isCompleted()) {
+            $donation->completed = true;
+            $donation->save();
+        }
+
+        return redirect()->route('users.donations', $donation->user)->with('message', 'Donation updated successfully');
     }
 
     public function destroy(Donation $donation)
@@ -113,10 +118,7 @@ class DonationController extends Controller
 
     public function getUserDonations(User $user)
     {
-        // \Log::info('User ID: ' . $user->id);
-        // \Log::info('Donation count: ' . $user->donations()->count());
-
-        $userDonations = Auth::user()->donations()->latest()->paginate();
-        return view('users.donations', compact('userDonations'));
+        $user_donations = Auth::user()->donations()->latest()->paginate();
+        return view('users.donations', compact('user_donations'));
     }
 }
