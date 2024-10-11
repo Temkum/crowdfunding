@@ -8,3 +8,6 @@ echo "Caching routes..."
 php artisan route:cache
 echo "Running migrations..."
 php artisan migrate --force
+
+echo "Generating API KEY..."
+php artisan key:generate --show
